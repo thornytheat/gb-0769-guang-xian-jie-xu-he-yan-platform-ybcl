@@ -14,6 +14,7 @@
 | M5 设计与实测对账 | 核对逐接头是否缺证 | POST /api/design | `app/modules/design/service.py` | `tests/test_design.py` |
 | M6 批次留档复跑 | 留档和重跑同一轨迹组 | POST /api/inspections | `app/modules/archive/storage.py` | `tests/test_archive.py` |
 | M7 光纤证据签发 | 复核签发条件并下载 | GET /api/certificate/<id> | `app/modules/certificate/service.py` | `tests/test_certificate.py` |
+| M8 仪表复校与交接暂缓 | 登记失准窗口、追溯已签件、判能否交接 | POST /api/meters · GET /api/inspections/<id>/handover | `app/modules/metrology/service.py` | `tests/test_metrology.py` `tests/test_workbench.py` |
 
 ## 陷阱登记
 
@@ -36,3 +37,12 @@
 - F-01 双向均值 (−0.100+0.300)/2=0.1000 dB，F-03 为 (0.33+0.31)/2=0.3200 dB，超出 0.200 dB。
 
 输入为设备导出的事件表。二进制曲线解码、坡度自校与电子签章未纳入该工作台。
+
+## 仪表复校规则（M8）
+
+- 失准窗口按（仪表编号，端）分键，只追加不覆盖；重复载荷不写入，跨次重叠 422。
+- 件号不随仪表信息变化：同轨迹同参数仍是同一件，仪表信息只能补登缺失端，冲突返回 `METROLOGY_CONFLICT`。
+- 逐端判定，任一端暂缓则整件暂缓；旧件缺仪表编号或实测时间 → `METER_INFO_MISSING` 暂缓。
+- 窗口为闭区间，边界时刻算命中；窗口按端隔离，同编号仪表两端互不串用。
+- handover 是只读追加视图：原签发结论（approved/blockers）保持不变，另给 `can_handover` 与逐端原因。
+- 迟到的仪表/实测信息经 `/api/inspections/<id>/metrology` 追档，重试 `updated:false`，不重复登记。

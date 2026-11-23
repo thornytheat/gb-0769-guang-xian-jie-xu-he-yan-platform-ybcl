@@ -29,4 +29,15 @@ th { background:var(--surface-2); position:sticky; top:0; z-index:1; }
 #focus-event { display:block; font-size:11px; min-height:15px; color:var(--accent); padding:0 var(--pad); }
 .archive p,.download { margin:8px var(--pad); }
 .hash { overflow-wrap:anywhere; color:var(--muted); }
+.meter-form,.meter-pick { display:flex; flex-wrap:wrap; gap:9px; align-items:end; padding:0 var(--pad) 10px; }
+.meter-form label,.meter-pick label { display:grid; gap:3px; }
+.meter-form input,.meter-form select { font:inherit; background:var(--bg); color:var(--ink); border:1px solid var(--line); padding:4px 6px; }
+.meter-form fieldset { border:1px solid var(--line); display:flex; gap:9px; align-items:end; }
+.meter-form fieldset input { min-width:190px; }
+.handover-head { padding:0 var(--pad); }
+.handover-head .original { color:var(--muted); }
+.handover { border-top:1px dashed var(--line); padding-top:8px; }
+.hold-codes { margin:8px var(--pad); color:var(--warn); }
+.handover-sheet { max-height:26vh; }
+h4 { padding:8px var(--pad) 2px; color:var(--accent); font-size:13px; }
 @media(max-width:470px) { .kpis div { padding:6px 4px; } }
